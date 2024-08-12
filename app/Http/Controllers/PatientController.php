@@ -11,14 +11,20 @@ class PatientController extends Controller
     public function index(Request $request, $doctorId)
     {
         $search = sanitize_text_field($request->get('health_condition'));
-        $query=Patient::where('doctor_id', $doctorId);
-        if(!empty($search))
+        $query = Patient::where('doctor_id', $doctorId);
+
+
+        if (!empty($search))
         {
-            $query=$query->where('health_condition',$search);
+            $query = $query->where('health_condition',$search);
         }
-        $query=$query->get();
+
+
+        $patients = $query->get();
+
+
         return[
-            'patients'=>$query
+            'patients' => $patients
         ];
 
     }
@@ -74,10 +80,37 @@ class PatientController extends Controller
 
     public function update(Request $request, $doctorId, $patientId)
     {
+        $rules=[
+            'name'=>'required|string',
+            'email'=>'required|string|email|max:255|unique:patients,email,'.$patientId,
+            'age'=>'required',
+            'gender'=>'required',
+            'contact_info' => 'required|string|max:255',
+            'health_condition'=> 'required'
+        ];
+        $messages = [
+            'name.required' => 'The name field is required.',
+            'email.required' => 'The email field is required.',
+            'email.email' => 'Please provide a valid email address.',
+            'email.unique' => 'This email address is already taken.',
+            'contact_info.required' => 'The contact info field is required.',
+        ];
+        $validation = $this->validate($request->all(), $rules,$messages);
+        $data = [
+            'doctor_id' => $doctorId,
+            'name'=> sanitize_text_field($validation['name']),
+            'email'=> sanitize_email($validation['email']), 
+            'age'=> sanitize_text_field($validation['age']), 
+            'gender'=> $validation['gender'], 
+            'contact_info'=>sanitize_text_field($validation['contact_info']), 
+            'health_condition'=> $validation['health_condition']
+            ];
+
+
         $patient = Patient::where('id',$patientId)
                           ->where('doctor_id',$doctorId)
                           ->firstOrFail();
-        $patient->update($request->all());
+        $patient->update($data);
 
         return [
             'message' => __('Patient Updated Successfully')
