@@ -43,7 +43,7 @@ class PatientController extends Controller
         $rules=[
             'name'=>'required|string',
             'email'=>'required|string|email|max:255|unique:patients,email',
-            'age'=>'required',
+            'age' => 'required|integer|min:0',
             'gender'=>'required',
             'contact_info' => 'required|string|max:255',
             'health_condition'=> 'required'
@@ -83,7 +83,7 @@ class PatientController extends Controller
         $rules=[
             'name'=>'required|string',
             'email'=>'required|string|email|max:255|unique:patients,email,'.$patientId,
-            'age'=>'required',
+            'age' => 'required|integer|min:0',
             'gender'=>'required',
             'contact_info' => 'required|string|max:255',
             'health_condition'=> 'required'
