@@ -3,8 +3,7 @@
 namespace FluentPlugin\App\Http\Controllers;
 
 use FluentPlugin\App\Models\Doctor;
-// use Illuminate\Http\Request;
-// use Illuminate\Support\Facades\Hash;
+
 use FluentPlugin\Framework\Request\Request;
 
 class DoctorController extends Controller 
@@ -29,47 +28,58 @@ class DoctorController extends Controller
         return Doctor::find($id);
     }
 
+    
     public function store(Request $request)
     {
-       
-         $doctor = $request->get('doctors');
+        
+        $doctor = $request->get('doctors');
+    
+        
+        $rules = [
+            'username' => 'required|string|unique:doctors,username',
+            'email' => 'required|string|email|max:255|unique:doctors,email',
+            'name' => 'required|string|max:255',
+            'contact_info' => 'required|string|max:255',
+            'speciality' => 'required|string|max:255',
+        ];
+        $messages = [
+            'name.required' => 'The name field is required.',
+            'email.required' => 'The email field is required.',
+            'email.email' => 'Please provide a valid email address.',
+            'email.unique' => 'This email address is already taken.',
+            'speciality.required' => 'The speciality field is required.',
+            'contact_info.required' => 'The contact info field is required.',
+        ];
+    
+        
+        $validation = $this->validate($doctor, $rules,$messages);
+        
+    
         try {
-            // $doctor->validate([
-            //     'username'=> 'required|unique',
-            //     'password'=> 'required',
-            //     'email'=>'required',
-            //     'name'=>'required',
-            // ]);
-
-            // $doctor = new Doctor($request->all());
-            // $data = [
-            //     'username' => 
-            //      'password',
-            //       'email', 
-            //       '',
-            //        'specialty',
-            //         'contact_info'
-                    
-            // ];
-            // $doctor->password = $request->password;
-            $data = [
-                'username' => $doctor['username'],
-                'email' => $doctor['email'],
-                'name' => $doctor['name'],
-                'contact_info' => $doctor['contact_info'],
-                'speciality' => $doctor['speciality']
-            ];
-            Doctor::create($data);
-            $allDoctors = Doctor::query()->get();
             
+            $data = [
+                'username' => sanitize_text_field($doctor['username']),
+                'email' => sanitize_email($doctor['email']),
+                'name' => sanitize_text_field($doctor['name']),
+                'contact_info' => sanitize_text_field($doctor['contact_info']),
+                'speciality' => sanitize_text_field($doctor['speciality']),
+            ];
+    
+            
+            Doctor::create($data);
+            $allDoctors = Doctor::all();
+    
             return [
                 'message' => 'success',
                 'doctors' => $allDoctors
             ];
+    
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
+    
+
 
     public function update(Request $request,$id)
     {
@@ -92,10 +102,7 @@ class DoctorController extends Controller
             ];
     }
 
-    public function filterBySpeciality($speciality)
-    {
-        return Doctor::where('speciality',$speciality)->get();
-    }
+    
     
 
 }
