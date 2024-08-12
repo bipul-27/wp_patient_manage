@@ -83,13 +83,38 @@ class DoctorController extends Controller
 
     public function update(Request $request,$id)
     {
+        $rules = [
+            'username' => 'required|string|unique:doctors,username,' . $id,
+            'email' => 'required|string|email|max:255|unique:doctors,email,' . $id,
+            'name' => 'required|string|max:255',
+            'contact_info' => 'required|string|max:255',
+            'speciality' => 'required|string|max:255',
+        ];
+        $messages = [
+            'name.required' => 'The name field is required.',
+            'email.required' => 'The email field is required.',
+            'email.email' => 'Please provide a valid email address.',
+            'email.unique' => 'This email address is already taken.',
+            'speciality.required' => 'The speciality field is required.',
+            'contact_info.required' => 'The contact info field is required.',
+        ];
+        $validation = $this->validate($request->all(), $rules,$messages);
         $doctor=Doctor::findOrFail($id);
-        $doctor->update($request->all());
+        $data = [
+            'username' => sanitize_text_field($validation['username']),
+            'email' => sanitize_email($validation['email']),
+            'name' => sanitize_text_field($validation['name']),
+            'contact_info' => sanitize_text_field($validation['contact_info']),
+            'speciality' => sanitize_text_field($validation['speciality']),
+        ];
+        $doctor->update($data);
         return [
             'message' => __('Doctor Updated Successfully')
         ];
        
     }
+
+
 
     public function destroy($id)
     {
