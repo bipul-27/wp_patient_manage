@@ -34,21 +34,29 @@ class PatientController extends Controller
     public function store(Request $request,$doctorId)
     {
         $patient = $request->get('patients');
-        // $request->validate([
-        //     'doctor_id' => 'required|exists:doctors,id',
-        //     'name' => 'required',
-        //     'email' => 'required|unique:patients',
-        //     'health_condition' => 'required'
-
-        // ]);
-        // console.log($patient);
+        $rules=[
+            'name'=>'required|string',
+            'email'=>'required|string|email|max:255|unique:patients,email',
+            'age'=>'required',
+            'gender'=>'required',
+            'contact_info' => 'required|string|max:255',
+            'health_condition'=> 'required'
+        ];
+        $messages = [
+            'name.required' => 'The name field is required.',
+            'email.required' => 'The email field is required.',
+            'email.email' => 'Please provide a valid email address.',
+            'email.unique' => 'This email address is already taken.',
+            'contact_info.required' => 'The contact info field is required.',
+        ];
+        $validation = $this->validate($patient, $rules,$messages);
         $data = [
         'doctor_id' => $doctorId,
-        'name'=> $patient['name'],
-        'email'=> $patient['email'], 
-        'age'=> $patient['age'], 
+        'name'=> sanitize_text_field($patient['name']),
+        'email'=> sanitize_email($patient['email']), 
+        'age'=> sanitize_text_field($patient['age']), 
         'gender'=> $patient['gender'], 
-        'contact_info'=> $patient['contact_info'], 
+        'contact_info'=>sanitize_text_field($patient['contact_info']), 
         'health_condition'=> $patient['health_condition']
         ];
 
@@ -81,18 +89,10 @@ class PatientController extends Controller
         $patient = Patient::where('id',$id)
                           ->where('doctor_id',$doctorId)
                           ->firstOrFail();
-        // $query=Patient::where('doctor_id',$doctorId);
-        // $query=$query->where('id',$id);
-        // $query->delete();
         $patient->delete();
         return [
             'message' => __('Doctor Deleted Successfully')
         ];
-    }
-
-    public function filteByHealthCondition($condition)
-    {
-        return Patient::where('health_condition',$condition)->get();
     }
 
 }
