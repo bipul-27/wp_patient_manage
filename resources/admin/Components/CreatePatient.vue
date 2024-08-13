@@ -20,7 +20,7 @@
                         <el-option label="Other" value="other"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="Contact Info">
+                <el-form-item label="Contact Number">
                     <el-input v-model="patients.contact_info"></el-input>
                 </el-form-item>
                 <el-form-item label="Health Condition">
