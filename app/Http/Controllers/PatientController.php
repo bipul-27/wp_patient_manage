@@ -9,25 +9,33 @@ use FluentPlugin\Framework\Request\Request;
 class PatientController extends Controller 
 {
     public function index(Request $request, $doctorId)
-    {
-        $search = sanitize_text_field($request->get('health_condition'));
-        $query = Patient::where('doctor_id', $doctorId);
+{
+    
+    $healthCondition = sanitize_text_field($request->get('health_condition'));
+    $contactInfo = sanitize_text_field($request->get('query'));
 
+    
+    $query = Patient::where('doctor_id', $doctorId);
 
-        if (!empty($search))
-        {
-            $query = $query->where('health_condition',$search);
-        }
-
-
-        $patients = $query->get();
-
-
-        return[
-            'patients' => $patients
-        ];
-
+    
+    if (!empty($healthCondition)) {
+        $query->where('health_condition', $healthCondition);
     }
+
+    
+    if (!empty($contactInfo)) {
+        $query->where('contact_info', 'LIKE', "%$contactInfo%");
+    }
+
+    
+    $patients = $query->get();
+
+    
+    return [
+        'patients' => $patients
+    ];
+}
+
 
     public function show($doctorId, $patientId)
     {
@@ -41,21 +49,19 @@ class PatientController extends Controller
     {
         $patient = $request->get('patients');
         $rules=[
-            'name'=>'required|string',
-            'email'=>'required|string|email|max:255|unique:patients,email',
+            'name'=>'required',
+            'email'=>'required|email|unique:patients,email',
             'age' => 'required|integer|min:0',
             'gender'=>'required',
-            'contact_info' => 'required|string|max:255',
+            'contact_info' => [
+        'required',
+        'regex:/^\+?[0-9\-\(\)\s]*$/',
+        'unique:patients,contact_info'
+    ],
             'health_condition'=> 'required'
         ];
-        $messages = [
-            'name.required' => 'The name field is required.',
-            'email.required' => 'The email field is required.',
-            'email.email' => 'Please provide a valid email address.',
-            'email.unique' => 'This email address is already taken.',
-            'contact_info.required' => 'The contact info field is required.',
-        ];
-        $validation = $this->validate($patient, $rules,$messages);
+       
+        $validation = $this->validate($patient, $rules);
         $data = [
         'doctor_id' => $doctorId,
         'name'=> sanitize_text_field($patient['name']),
@@ -81,21 +87,15 @@ class PatientController extends Controller
     public function update(Request $request, $doctorId, $patientId)
     {
         $rules=[
-            'name'=>'required|string',
-            'email'=>'required|string|email|max:255|unique:patients,email,'.$patientId,
+            'name'=>'required',
+            'email'=>'required|email|unique:patients,email,'.$patientId,
             'age' => 'required|integer|min:0',
             'gender'=>'required',
-            'contact_info' => 'required|string|max:255',
+            'contact_info' => 'required',
             'health_condition'=> 'required'
         ];
-        $messages = [
-            'name.required' => 'The name field is required.',
-            'email.required' => 'The email field is required.',
-            'email.email' => 'Please provide a valid email address.',
-            'email.unique' => 'This email address is already taken.',
-            'contact_info.required' => 'The contact info field is required.',
-        ];
-        $validation = $this->validate($request->all(), $rules,$messages);
+       
+        $validation = $this->validate($request->all(), $rules);
         $data = [
             'doctor_id' => $doctorId,
             'name'=> sanitize_text_field($validation['name']),
