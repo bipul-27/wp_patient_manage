@@ -52,12 +52,8 @@ class PatientController extends Controller
             'name'=>'required',
             'email'=>'required|email|unique:patients,email',
             'age' => 'required|integer|min:0',
-            'gender'=>'required',
-            'contact_info' => [
-        'required',
-        'regex:/^\+?[0-9\-\(\)\s]*$/',
-        'unique:patients,contact_info'
-    ],
+            'gender'=>'required|unique:patients,contact_info',
+            'contact_info' =>'required' ,
             'health_condition'=> 'required'
         ];
        
