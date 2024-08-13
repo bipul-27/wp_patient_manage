@@ -47,7 +47,7 @@ export default {
         return {
             doctorId: this.$route.params.id,
             healthConditionFilter: '',
-            searchQuery: '',  
+            searchQuery: '',  // Add searchQuery to data
             patients: []
         };
     },
