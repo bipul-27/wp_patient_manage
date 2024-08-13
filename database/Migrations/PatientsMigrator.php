@@ -20,7 +20,7 @@ class PatientsMigrator
         email VARCHAR(255) NOT NULL UNIQUE,
         age INT NULL,
         gender ENUM('male','female', 'others') NOT NULL,
-        contact_info VARCHAR(255) NULL,
+        contact_info VARCHAR(20) NOT NULL UNIQUE,
         health_condition ENUM('critical','stable','normal') NOT NULL,
         created_at TIMESTAMP NULL,
         updated_at TIMESTAMP NULL,
