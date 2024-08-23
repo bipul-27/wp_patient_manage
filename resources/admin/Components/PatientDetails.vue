@@ -36,7 +36,7 @@
             <el-button type="primary" @click="navigateToEditPatient"> Edit</el-button>
           </div>
           <div class="profile-stats">
-            <el-card style="width:  115px; margin-left: 30px" shadow="always">
+            <el-card style="width:  115px" shadow="always">
             <div class="stat-item">
               <strong>{{ patient.bmi }}</strong>
               <span>BMI</span>
@@ -310,7 +310,11 @@ export default {
         .profile-stats {
           display: flex;
           justify-content: space-between;
-          margin-top: 55px;
+          margin-top: 33px;
+          margin-left: 120px;
+          margin-right: 120px;
+          margin-bottom: 25px;
+
 
           .stat-item {
             text-align: center;
@@ -353,10 +357,12 @@ export default {
     }
   }
   .el-button{
-    margin: 17px 0px;
-    padding: 19px 15px;
+    margin: 17px;
+    padding: 19px 25px;
     background-color: #167c68;
     border: none;
+    font-size: 19px;
+    margin-right: 125px;
 }
 }
 
