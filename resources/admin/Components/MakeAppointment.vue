@@ -102,7 +102,6 @@
           });
       },
       fetchPatientDetails() {
-        // Fetch patient details if needed when a patient is selected this.appointment.patient_id
       },
       makeAppointment(){
         this.saving = true;
