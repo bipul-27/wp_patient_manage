@@ -172,7 +172,6 @@ export default {
       this.$router.push({ name: 'makeAppointment', params: { id: this.doctorId } });
     },
     handleCancelPrescription() {
-      // Handle the cancellation of the prescription creation
     },
     navigateToEditPatient(){
       this.$router.push({ name: 'edit-patient', params: { doctorId: this.doctorId, patientId: this.patientId } });
@@ -189,7 +188,7 @@ export default {
   watch: {
     activeTab(newTab) {
       if (newTab === 'appointments') {
-        this.fetchAppointments(); // Fetch appointments whenever the appointments tab is selected
+        this.fetchAppointments(); 
       }
       else if (this.activeTab === 'profile'){
       this.fetchPatient();
