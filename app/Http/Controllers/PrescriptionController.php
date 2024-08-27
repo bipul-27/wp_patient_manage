@@ -19,23 +19,43 @@ class PrescriptionController extends Controller
         $diagnoses = $request->get('diagnosisList');   
         $medicines = $request->get('medicinesList');
         $tests = $request->get('testsList');
+
+        $rules = [
+            'advice' => 'required|string|max:255',
+            'diagnosisList' => 'required|array|min:1',
+            'diagnosisList.*.name' => 'required',
+            'medicinesList' => 'required|array|min:1',
+            'medicinesList.*.name' => 'required',
+            'medicinesList.*.type' => 'required',
+            'medicinesList.*.dosage' => 'required',
+            'medicinesList.*.duration' => 'required',
+            'medicinesList.*.times.morning' => 'required',
+            'medicinesList.*.times.noon' => 'required',
+            'medicinesList.*.times.night' => 'required',
+            'testsList' => 'required|array|min:1',
+            'testsList.*.name' => 'required',
+            'testsList.*.info' => 'nullable',
+        ];
     
-        // Create the prescription
+       
+        $validation = $request->validate($rules);
+    
+        
         $prescription = Prescription::create([
             'doctor_id' => $doctorId,
             'patient_id' => $patientId,
-            'advice' => $advice
+            'advice' => sanitize_text_field($advice)
         ]);
     
-        // Store each diagnosis
+        
         foreach ($diagnoses as $diagnosis) {
             PrescriptionDiagnosis::create([
                 'prescription_id' => $prescription->id,
-                'diagnosis' => $diagnosis['name']
+                'diagnosis' => sanitize_text_field($diagnosis['name'])
             ]);
         }
     
-        // Store each medicine
+       
         foreach ($medicines as $medicine) {
             PrescriptionMedicine::create([
                 'doctor_id' => $doctorId,
@@ -43,15 +63,15 @@ class PrescriptionController extends Controller
                 'prescription_id' => $prescription->id,
                 'medicine_name' => $medicine['name'],
                 'medicine_type' => $medicine['type'],
-                'dosage' => $medicine['dosage'],
-                'duration' => $medicine['duration'],
+                'dosage' => sanitize_text_field($medicine['dosage']),
+                'duration' => sanitize_text_field($medicine['duration']),
                 'morning' => $medicine['times']['morning'],
                 'noon' => $medicine['times']['noon'],
                 'night' => $medicine['times']['night']
             ]);
         }
     
-        // Store each test
+        
         foreach ($tests as $test) {
             PrescriptionTest::create([
                 'doctor_id' => $doctorId,
@@ -62,7 +82,7 @@ class PrescriptionController extends Controller
             ]);
         }
     
-        // Retrieve the stored data to return
+        
         $allDiagnosis = PrescriptionDiagnosis::where('prescription_id', $prescription->id)->get();
         $allMedicine = PrescriptionMedicine::where('prescription_id', $prescription->id)->get();
         $allTest = PrescriptionTest::where('prescription_id', $prescription->id)->get();
@@ -77,14 +97,14 @@ class PrescriptionController extends Controller
     }
     public function fetchPrescriptions(Request $request, $doctorId, $patientId)
     {
-        // Fetch all prescriptions for the given doctor and patient
+        
         $prescriptions = Prescription::where('doctor_id', $doctorId)
             ->where('patient_id', $patientId)
             ->with(['diagnoses', 'medicines', 'tests'])
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // Structure the data for the response
+       
         $response = $prescriptions->map(function($prescription) {
             return [
                 'id' => $prescription->id,
