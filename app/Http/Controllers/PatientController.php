@@ -104,7 +104,7 @@ class PatientController extends Controller
     {
         $rules=[
             'name'=>'required',
-            'email'=>'required|email|unique:patients,email',
+            'email'=>'required|email|unique:patients,email,' . $patientId,
             'age' => 'required|integer|min:0',
             'gender'=>'required|unique:patients,contact_info',
             'contact_info' =>'required' ,
@@ -120,7 +120,7 @@ class PatientController extends Controller
        
         $validation = $this->validate($request->all(), $rules);
         $data = [
-            'doctor_id' => $doctorId,
+        'doctor_id' => $doctorId,
         'name'=> sanitize_text_field($validation['name']),
         'email'=> sanitize_email($validation['email']), 
         'age'=> sanitize_text_field($validation['age']), 
@@ -186,7 +186,4 @@ class PatientController extends Controller
 
     return response()->json(['message' => 'Patient details saved successfully']);
 }
-
-
-
 }
