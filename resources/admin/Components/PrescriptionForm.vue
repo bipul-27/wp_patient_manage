@@ -89,7 +89,10 @@
           <h3>Tests</h3>
           <div v-for="(test, index) in testsList" :key="index" class="test-entry">
             <el-input v-model="test.name" placeholder="Test Name" />
-            <el-input v-model="test.info" placeholder="Extra Information" />
+            <el-input v-model="test.info" 
+            autosize
+            type="textarea" 
+            placeholder="Extra Information" />
           </div>
           <div v-if="testsList.length">
             <ul>
@@ -280,7 +283,6 @@ export default {
 .disease-entry{
     width: 250px;
   }
-
 
 </style>
   
