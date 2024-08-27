@@ -18,7 +18,6 @@
             </ul>
           </li>
 
-          <!-- Medicine Menu -->
           <li @click="toggleMenu('medicine')" :class="{ expanded: showMedicineMenu }">
             Medicine
             <ul v-if="showMedicineMenu" class="submenu">
@@ -68,7 +67,6 @@
       </div>
 
       <div v-else-if="activeTab === 'add-patient'">
-        <!-- The Add Patient form goes here -->
       </div>
     </main>
   </div>
