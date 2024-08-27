@@ -1,11 +1,8 @@
 <template>
     <div class="cancel-appointment-container">
-      <!-- Header with navigation button -->
       <div class="header">
         <el-button type="primary" @click="navigateToPatientList">Go to Patient List</el-button>
       </div>
-  
-      <!-- Filters: Search by Contact Number and Date Picker -->
       <div class="filters">
         <el-input
           v-model="searchQuery"
@@ -23,7 +20,6 @@
         ></el-date-picker>
       </div>
   
-      <!-- Appointments Table -->
       <el-table :data="appointments" style="width: 100%; margin-top: 20px;">
         <el-table-column prop="patient.name" label="Patient Name"></el-table-column>
         <el-table-column prop="patient.contact_info" label="Contact Number"></el-table-column>
