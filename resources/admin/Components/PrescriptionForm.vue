@@ -74,7 +74,7 @@
           <div v-if="medicinesList.length">
             <ul>
               <li v-for="(medicine, index) in medicinesList" :key="index">
-                {{ index + 1 }}. {{ medicine.name }} - {{ medicine.type }} - {{ medicine.dosage }} - {{ medicine.duration }} - 
+                {{ index + 1 }}. {{ medicine.name }} - {{ medicine.type }} - {{ medicine.dosage }} - {{ medicine.duration }} Days - 
                 {{ medicine.times.morning ? 'Morning ' : '' }} 
                 {{ medicine.times.noon ? 'Noon ' : '' }} 
                 {{ medicine.times.night ? 'Night ' : '' }}
@@ -283,6 +283,7 @@ export default {
 .disease-entry{
     width: 250px;
   }
+
 
 </style>
   
