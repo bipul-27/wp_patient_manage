@@ -14,7 +14,7 @@ class DoctorController extends Controller
         $query = Doctor::query();
 
         if (!empty($search)) {
-            $query = $query->where('speciality', $search);
+            $query = $query->where('speciality','LIKE', "%$search%");
         }
         $query = $query->get();
 
@@ -38,9 +38,9 @@ class DoctorController extends Controller
         $rules = [
             'username' => 'required|string|unique:doctors,username',
             'email' => 'required|string|email|max:255|unique:doctors,email',
-            'name' => 'required|string|max:255',
-            'contact_info' => 'required|string|max:255',
-            'speciality' => 'required|string|max:255',
+            'name' => 'required',
+            'contact_info' => 'required',
+            'speciality' => 'required',
         ];
     
         
@@ -74,15 +74,8 @@ class DoctorController extends Controller
             'contact_info' => 'required|string|max:255',
             'speciality' => 'required|string|max:255',
         ];
-        $messages = [
-            'name.required' => 'The name field is required.',
-            'email.required' => 'The email field is required.',
-            'email.email' => 'Please provide a valid email address.',
-            'email.unique' => 'This email address is already taken.',
-            'speciality.required' => 'The speciality field is required.',
-            'contact_info.required' => 'The contact info field is required.',
-        ];
-        $validation = $this->validate($request->all(), $rules,$messages);
+        
+        $validation = $this->validate($request->all(), $rules);
         $doctor=Doctor::findOrFail($id);
         $data = [
             'username' => sanitize_text_field($validation['username']),
@@ -110,8 +103,4 @@ class DoctorController extends Controller
                 'message' => __('Doctor Deleted Successfully')
             ];
     }
-
-    
-    
-
 }
