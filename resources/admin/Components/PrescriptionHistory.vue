@@ -19,7 +19,7 @@
           <h4>Medicines:</h4>
           <ul>
             <li v-for="medicine in prescription.medicines" :key="medicine.id">
-              {{ medicine.medicine_name }} - {{ medicine.medicine_type }} - {{ medicine.dosage }} - {{ medicine.duration }} - 
+              {{ medicine.medicine_name }} - {{ medicine.medicine_type }} - {{ medicine.dosage }} - {{ medicine.duration }} Days - 
               {{ medicine.morning ? 'Morning ' : '' }}
               {{ medicine.noon ? 'Noon ' : '' }}
               {{ medicine.night ? 'Night ' : '' }}
